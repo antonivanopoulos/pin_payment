@@ -47,6 +47,15 @@ module PinPayment
       Refund.create self
     end
 
+    # Captures a previously captured charge.
+    #
+    # @param [String] token the charge token
+    # @return [PinPayment::Charge]
+    def self.capture token
+      response = put(URI.parse(PinPayment.api_url).tap{|uri| uri.path = "/1/charges/#{token}/capture" })
+      new(response.delete('token'), response)
+    end
+
     # @return [Boolean]
     def success?
       success == true
